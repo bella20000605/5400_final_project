@@ -9,6 +9,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, LSTM, Dense
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
 
 class SarcasmModel:
     """ 
@@ -144,7 +145,49 @@ class SarcasmDetector(SarcasmModel):
         prediction = self.model.predict(padded)
         return 'Sarcastic' if prediction[0][0] > 0.5 else 'Not Sarcastic'
 
+class RandomForestSarcasm(SarcasmModel):
+    """
+    Can perform Random Forest classification on a group of text files.
+    It will read through each file in the training folder, find the TF-IDF vector space for the text data,
+    Then it will fit the Random Forest model on them.
+    """
 
+    def __init__(self, n_estimators=100, max_depth=None, random_state=None):
+        """
+        Initializes the Random Forest classifier with the specified number of trees and max depth.
+        :param n_estimators: Number of trees in the forest.
+        :param max_depth: Maximum depth of the tree.
+        :param random_state: Random state for reproducibility.
+        """
+        super().__init__(var_smoothing=0)  # var_smoothing not used in Random Forest
+        self.n_estimators = n_estimators
+        self.max_depth = max_depth
+        self.random_state = random_state
+
+    def train(self, x_train, y_train):
+        """
+        Trains the Random Forest classifier on the given training data.
+        :param x_train: feature training set.
+        :param y_train: response training set.
+        :return: TF-IDF training vector space and fitted training model.
+        """
+        tfidf = TfidfVectorizer()
+        train_tfidf = tfidf.fit_transform(x_train)
+        rf_model = RandomForestClassifier(n_estimators=self.n_estimators, max_depth=self.max_depth, random_state=self.random_state)
+        rf_model.fit(train_tfidf, y_train)
+        return tfidf, rf_model
+
+    def test(self, training_model, tfidf, x_test):
+        """
+        Tests the Random Forest model on the given test data.
+        :param training_model: fitted training model.
+        :param tfidf: TF-IDF training vector space.
+        :param x_test: feature test set.
+        :return: response variable prediction.
+        """
+        test_tfidf = tfidf.transform(x_test)
+        y_pred = training_model.predict(test_tfidf)
+        return y_pred
 # # Usage
 # detector = SarcasmDetector('path_to_dataset.csv')
 # detector.build_model()
