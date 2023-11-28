@@ -24,12 +24,23 @@ def build_dataframe(path):
     Takes as input a directory containing the sarcasm data.
     The function will split the data into training and test using 80/20 split.
     :param folder: a path to the dataset
-    :return: a tuple of 4 arguments x_training, y_training, x_test, y_test
+    :return: no return, save the six datasets x_train, x_test, y_train, y_test, sarcasm_train, sarcasm_test in the data folder
     """
     df = pd.read_csv(path)
     X = df['text']
     y = df['class']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=10)
-    return X_train, X_test, y_train, y_test
+    sarcasm_train = pd.concat([X_train, y_train], axis=1)
+    sarcasm_test = pd.concat([X_test, y_test], axis=1)
+
+    X_train.to_csv('data/X_train.csv', sep='\t', index=False)
+    X_test.to_csv('data/X_test.csv', sep='\t', index=False)
+    y_train.to_csv('data/y_train.csv', sep='\t', index=False)
+    y_test.to_csv('data/y_test.csv', sep='\t', index=False)
+    sarcasm_train.to_csv('data/sarcasm_train.csv', sep='\t', index=False)
+    sarcasm_test.to_csv('data/sarcasm_test.csv', sep='\t', index=False)
+
 
 combine_data("data/GEN-sarc-notsarc.csv","data/HYP-sarc-notsarc.csv","data/RQ-sarc-notsarc.csv")
+build_dataframe("data/sarcasm.csv")
+
