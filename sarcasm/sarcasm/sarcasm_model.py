@@ -31,8 +31,8 @@ class Logistic(SarcasmModel):
     It will read through each file in the training folder, find the TF-IDF vector space for the text data
     Then it will fit the Logistic Regression model on them.
     """
-    def __init__(self,var_smoothing = 0.1):
-        self.var_smoothing = var_smoothing
+    def __init__(self):
+        pass
 
     def train(self,x_train,y_train):
         """
@@ -53,6 +53,8 @@ class Logistic(SarcasmModel):
         test_tfidf = tfidf.transform(x_test)
         y_pred = training_model.predict(test_tfidf)
         return y_pred
+    
+    def test_prob
 
 class NaiveBayes(SarcasmModel):
     """

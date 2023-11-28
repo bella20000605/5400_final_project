@@ -1,7 +1,0 @@
-Metadata-Version: 2.1
-Name: sarcasm-model
-Version: 0.0.1
-Summary: Build Sarcasm Detection Model Class
-Author: DSAN5400 Final Project
-Requires-Python: >=3.6
-Description-Content-Type: text/markdown
