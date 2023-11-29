@@ -87,7 +87,7 @@ class NaiveBayes(SarcasmModel):
         return y_pred
 
 
-class SarcasmDetector(SarcasmModel):
+class LSTM(SarcasmModel):
     def __init__(self, dataset_path, vocab_size=10000, max_length=100):
         self.vocab_size = vocab_size
         self.max_length = max_length
@@ -190,6 +190,8 @@ class RandomForestSarcasm(SarcasmModel):
         test_tfidf = tfidf.transform(x_test)
         y_pred = training_model.predict(test_tfidf)
         return y_pred
+
+    
 # # Usage
 # detector = SarcasmDetector('path_to_dataset.csv')
 # detector.build_model()
