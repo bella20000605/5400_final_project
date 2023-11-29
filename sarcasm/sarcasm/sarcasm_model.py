@@ -197,93 +197,58 @@ class LSTMDetector(SarcasmModel):
     building an LSTM model, training the model on provided
     and making predictions on new text instances
     """
-    def __init__(self, x_train, y_train, x_test, y_test, vocab_size=10000, max_length=100):
+    def __init__(self, vocab_size=10000, max_length=100):
         """
-        Initializes the LSTM model with the data set".
-        :param x_train: training data of x.
-        :param y_train: training data of y.
-        :param x_test: testing data of x.
-        :param y_test: testing data of y.
+        Initializes the LSTM model with some important parameter
         :param vocab_size: maximum number of words to keep in the tokenizer, based on word frequency.
         :param max_length: maximum length of all sequences (number of words per text instance).
         """
         self.vocab_size = vocab_size
         self.max_length = max_length
         self.tokenizer = Tokenizer(num_words=self.vocab_size, oov_token="<OOV>")
-        self.model = None
 
-        # Load and preprocess the dataset
-        self.x_train = x_train
-        self.y_train = y_train
-        self.x_test = x_test
-        self.y_test = y_test
-        self._preprocess_data()
-
-    def _preprocess_data(self):
+    def train(self, x_train, y_train, epochs=10):
         """
-        Tokenizes and pads the text sequences and encodes the labels for training and testing datasets.
+        train LSTM model with given data.
+        :param x_train: training data of x.
+        :param y_train: training data of y.
+        :param epochs: number of epochs you want this data train.
+        :return: fitted training model and tokenizer vector space.
         """
-        # Tokenize and pad sequences
-        self.tokenizer.fit_on_texts(self.x_train['text'])
-        sequences = self.tokenizer.texts_to_sequences(self.x_train['text'])
-        self.X_train = pad_sequences(sequences, maxlen=self.max_length, padding='post', truncating='post')
-
-        sequences = self.tokenizer.texts_to_sequences(self.x_test['text'])
-        self.X_test = pad_sequences(sequences, maxlen=self.max_length, padding='post', truncating='post')
-
-        # Encode labels
+        self.tokenizer.fit_on_texts(x_train['text'])
+        sequences = self.tokenizer.texts_to_sequences(x_train['text'])
+        X_train = pad_sequences(sequences, maxlen=self.max_length, padding='post', truncating='post')
         label_encoding = {'notsarc': 0, 'sarc': 1}
-        self.y_train_encoded = self.y_train['class'].map(label_encoding).values
-        self.y_test_encoded = self.y_test['class'].map(label_encoding).values
+        y_train_encoded = y_train['class'].map(label_encoding).values
 
-    def build_model(self):
-        """
-        Builds an LSTM neural network model for sarcasm detection.
-        """
-        # Build LSTM model
-        self.model = Sequential([
+        # Build the LSTM model
+        model = Sequential([
             Embedding(self.vocab_size, 16, input_length=self.max_length),
             LSTM(32),
             Dense(24, activation='relu'),
             Dense(1, activation='sigmoid')
         ])
-
-        # Compile the model
-        self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-    def train(self, epochs=10):
-        """
-        Trains the LSTM model on the training data for a specified number of epochs.
-        :param epochs: number of epochs for this model.
-        """
-        if self.model is None:
-            print("Model is not built. Call build_model() first.")
-            return
+        model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         # Train the model
-        self.model.fit(self.X_train, self.y_train_encoded, epochs=epochs, validation_data=(self.X_test, self.y_test_encoded))
+        model.fit(X_train, y_train_encoded, epochs=epochs)
+        return model, self.tokenizer
 
-    def evaluate(self):
+    def test(self, x_test, model, tokenizer):
         """
-        Evaluates the trained model on the test dataset and returns the accuracy.
+        test LSTM model with given data:
+        :param x_test: test data of x.
+        :param model: fitted training model.
+        :param tokenizer: tokenizer vector space.
+        :return: response variable prediction.
         """
-        # Evaluate the model
-        if self.model is None:
-            print("Model is not built. Call build_model() first.")
-            return
+        # Preprocess the test data
+        sequences = tokenizer.texts_to_sequences(x_test['text'])
+        X_test = pad_sequences(sequences, maxlen=self.max_length, padding='post', truncating='post')
 
-        test_loss, test_acc = self.model.evaluate(self.X_test, self.y_test_encoded)
-        return test_acc
-
-    def predict(self, sentence):
-        """
-        Predicts whether a given sentence is sarcastic or not using the trained model.
-        """
-        # Make a prediction
-        sequence = self.tokenizer.texts_to_sequences([sentence])
-        padded = pad_sequences(sequence, maxlen=self.max_length, padding='post', truncating='post')
-        prediction = self.model.predict(padded)
-        return 'Sarcastic' if prediction[0][0] > 0.5 else 'Not Sarcastic'
+        # Predict
+        y_pred = model.predict(X_test)
+        return (y_pred > 0.5).astype(int).flatten()
     
 # # Usage
 # detector = LSTMDetector(x_train,y_train,x_test,y_test)
