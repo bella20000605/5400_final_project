@@ -256,7 +256,7 @@ class LSTMDetector(SarcasmModel):
         return 'Sarcastic' if prediction[0][0] > 0.5 else 'Not Sarcastic'
     
 # # Usage
-# detector = SarcasmDetector('path_to_dataset.csv')
+# detector = LSTMDetector(x_train,y_train,x_test,y_test)
 # detector.build_model()
 # detector.train(epochs=10)
 # accuracy = detector.evaluate()
