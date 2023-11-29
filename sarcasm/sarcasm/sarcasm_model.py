@@ -191,6 +191,69 @@ class RandomForestSarcasm(SarcasmModel):
         y_pred = training_model.predict(test_tfidf)
         return y_pred
 
+class LSTMDetector(SarcasmModel):
+    def __init__(self, x_train, y_train, x_test, y_test, vocab_size=10000, max_length=100):
+        self.vocab_size = vocab_size
+        self.max_length = max_length
+        self.tokenizer = Tokenizer(num_words=self.vocab_size, oov_token="<OOV>")
+        self.model = None
+
+        # Load and preprocess the dataset
+        self.x_train = x_train
+        self.y_train = y_train
+        self.x_test = x_test
+        self.y_test = y_test
+        self._preprocess_data()
+
+    def _preprocess_data(self):
+        # Tokenize and pad sequences
+        self.tokenizer.fit_on_texts(self.x_train['text'])
+        sequences = self.tokenizer.texts_to_sequences(self.x_train['text'])
+        self.X_train = pad_sequences(sequences, maxlen=self.max_length, padding='post', truncating='post')
+
+        sequences = self.tokenizer.texts_to_sequences(self.x_test['text'])
+        self.X_test = pad_sequences(sequences, maxlen=self.max_length, padding='post', truncating='post')
+
+        # Encode labels
+        label_encoding = {'notsarc': 0, 'sarc': 1}
+        self.y_train_encoded = self.y_train['class'].map(label_encoding).values
+        self.y_test_encoded = self.y_test['class'].map(label_encoding).values
+
+    def build_model(self):
+        # Build LSTM model
+        self.model = Sequential([
+            Embedding(self.vocab_size, 16, input_length=self.max_length),
+            LSTM(32),
+            Dense(24, activation='relu'),
+            Dense(1, activation='sigmoid')
+        ])
+
+        # Compile the model
+        self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    def train(self, epochs=10):
+        if self.model is None:
+            print("Model is not built. Call build_model() first.")
+            return
+
+        # Train the model
+        self.model.fit(self.X_train, self.y_train_encoded, epochs=epochs, validation_data=(self.X_test, self.y_test_encoded))
+
+    def evaluate(self):
+        # Evaluate the model
+        if self.model is None:
+            print("Model is not built. Call build_model() first.")
+            return
+
+        test_loss, test_acc = self.model.evaluate(self.X_test, self.y_test_encoded)
+        return test_acc
+
+    def predict(self, sentence):
+        # Make a prediction
+        sequence = self.tokenizer.texts_to_sequences([sentence])
+        padded = pad_sequences(sequence, maxlen=self.max_length, padding='post', truncating='post')
+        prediction = self.model.predict(padded)
+        return 'Sarcastic' if prediction[0][0] > 0.5 else 'Not Sarcastic'
     
 # # Usage
 # detector = SarcasmDetector('path_to_dataset.csv')
