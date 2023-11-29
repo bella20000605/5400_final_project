@@ -33,12 +33,12 @@ def build_dataframe(path):
     sarcasm_train = pd.concat([X_train, y_train], axis=1)
     sarcasm_test = pd.concat([X_test, y_test], axis=1)
 
-    X_train.to_csv('data/X_train.csv', sep='\t', index=False)
-    X_test.to_csv('data/X_test.csv', sep='\t', index=False)
-    y_train.to_csv('data/y_train.csv', sep='\t', index=False)
-    y_test.to_csv('data/y_test.csv', sep='\t', index=False)
-    sarcasm_train.to_csv('data/sarcasm_train.csv', sep='\t', index=False)
-    sarcasm_test.to_csv('data/sarcasm_test.csv', sep='\t', index=False)
+    X_train.to_csv('data/X_train.csv', index=False)
+    X_test.to_csv('data/X_test.csv', index=False)
+    y_train.to_csv('data/y_train.csv', index=False)
+    y_test.to_csv('data/y_test.csv', index=False)
+    sarcasm_train.to_csv('data/sarcasm_train.csv', index=False)
+    sarcasm_test.to_csv('data/sarcasm_test.csv', index=False)
 
 
 combine_data("data/GEN-sarc-notsarc.csv","data/HYP-sarc-notsarc.csv","data/RQ-sarc-notsarc.csv")
