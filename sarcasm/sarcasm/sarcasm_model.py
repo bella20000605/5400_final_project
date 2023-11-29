@@ -192,7 +192,21 @@ class RandomForestSarcasm(SarcasmModel):
         return y_pred
 
 class LSTMDetector(SarcasmModel):
+    """
+    A class for detecting sarcasm in text using an LSTM neural network model.
+    building an LSTM model, training the model on provided
+    and making predictions on new text instances
+    """
     def __init__(self, x_train, y_train, x_test, y_test, vocab_size=10000, max_length=100):
+        """
+        Initializes the LSTM model with the data set".
+        :param x_train: training data of x.
+        :param y_train: training data of y.
+        :param x_test: testing data of x.
+        :param y_test: testing data of y.
+        :param vocab_size: maximum number of words to keep in the tokenizer, based on word frequency.
+        :param max_length: maximum length of all sequences (number of words per text instance).
+        """
         self.vocab_size = vocab_size
         self.max_length = max_length
         self.tokenizer = Tokenizer(num_words=self.vocab_size, oov_token="<OOV>")
@@ -206,6 +220,9 @@ class LSTMDetector(SarcasmModel):
         self._preprocess_data()
 
     def _preprocess_data(self):
+        """
+        Tokenizes and pads the text sequences and encodes the labels for training and testing datasets.
+        """
         # Tokenize and pad sequences
         self.tokenizer.fit_on_texts(self.x_train['text'])
         sequences = self.tokenizer.texts_to_sequences(self.x_train['text'])
@@ -220,6 +237,9 @@ class LSTMDetector(SarcasmModel):
         self.y_test_encoded = self.y_test['class'].map(label_encoding).values
 
     def build_model(self):
+        """
+        Builds an LSTM neural network model for sarcasm detection.
+        """
         # Build LSTM model
         self.model = Sequential([
             Embedding(self.vocab_size, 16, input_length=self.max_length),
@@ -232,6 +252,10 @@ class LSTMDetector(SarcasmModel):
         self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     def train(self, epochs=10):
+        """
+        Trains the LSTM model on the training data for a specified number of epochs.
+        :param epochs: number of epochs for this model.
+        """
         if self.model is None:
             print("Model is not built. Call build_model() first.")
             return
@@ -240,6 +264,9 @@ class LSTMDetector(SarcasmModel):
         self.model.fit(self.X_train, self.y_train_encoded, epochs=epochs, validation_data=(self.X_test, self.y_test_encoded))
 
     def evaluate(self):
+        """
+        Evaluates the trained model on the test dataset and returns the accuracy.
+        """
         # Evaluate the model
         if self.model is None:
             print("Model is not built. Call build_model() first.")
@@ -249,6 +276,9 @@ class LSTMDetector(SarcasmModel):
         return test_acc
 
     def predict(self, sentence):
+        """
+        Predicts whether a given sentence is sarcastic or not using the trained model.
+        """
         # Make a prediction
         sequence = self.tokenizer.texts_to_sequences([sentence])
         padded = pad_sequences(sequence, maxlen=self.max_length, padding='post', truncating='post')
