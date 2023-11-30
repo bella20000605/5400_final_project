@@ -54,8 +54,6 @@ class Logistic(SarcasmModel):
         test_tfidf = tfidf.transform(x_test)
         y_pred = training_model.predict(test_tfidf)
         return y_pred
-    
-    def test_prob
 
 class NaiveBayes(SarcasmModel):
     """

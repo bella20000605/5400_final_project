@@ -17,7 +17,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("-t", "--text", required=True, help="text string to predict")
 
-    #Model has to be either "LG", "NB", "LSTM", "RF" or "All"
+    #Model has to be either "LG", "NB", "LTSM", "RF" or "All"
     parser.add_argument("-m", "--model", required=True, help="model to choose")
     parser.add_argument("-f", "--flag", required=True, help="flag whether to translate text")
 
