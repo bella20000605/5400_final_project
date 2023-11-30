@@ -248,7 +248,8 @@ class LSTMDetector(SarcasmModel):
 
         # Predict
         y_pred = model.predict(X_test)
-        return (y_pred > 0.5).astype(int).flatten()
+        y_pred_labels = ['sar' if pred > 0.5 else 'notsar' for pred in y_pred.flatten()]
+        return y_pred_labels
     
 # # Usage
 # detector = LSTMDetector(x_train,y_train,x_test,y_test)
