@@ -1,18 +1,18 @@
 model 1：
 
-|                | Predicted Negative | Predicted Positive | Total |
-|----------------|--------------------|--------------------|-------|
+|                 | Predicted Negative | Predicted Positive | Total |
+|---------------- |--------------------|--------------------|-------|
 | Actual Negative |       678          |       248          |  926  |
 | Actual Positive |       264          |       688          |  952  |
 | Total           |       942          |       936          | 1878  |
 
 percentage
 
-|                | Predicted Negative | Predicted Positive |  Total  |
-|----------------|-------------------:|-------------------:|-------:|
+|                 | Predicted Negative | Predicted Positive |  Total |
+|---------------- |-------------------:|-------------------:|-------:|
 | Actual Negative |             36.10% |             13.21% | 49.31% |
 | Actual Positive |             14.06% |             36.63% | 50.69% |
-| Total           |             50.16% |             49.84% | 100.00% |
+| Total           |             50.16% |             49.84% | 100.00%|
 
 acc: 72.74%
 recall: 72.27%
