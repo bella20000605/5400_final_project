@@ -16,7 +16,8 @@ Each model is equipped with an initialization function, a training function that
 6. 'tests': The 'tests' subfolder comprises simple pytest test cases used to validate the functionality of our sarcasm detection model, ensuring that the returned outcomes align with expectations.
 7. 'data': The 'data' subfolder contains the training data utilized to train each of the sarcasm detection models.
 
-**Project Strucutre Diagram**
+**Project Structure Diagram**
+![Project Structure](Project_Structure.jpg)
 
 **Main.py**
 1. The main software accepts three arguments:
