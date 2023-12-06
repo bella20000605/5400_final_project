@@ -17,6 +17,7 @@ Each model is equipped with an initialization function, a training function that
 7. 'data': The 'data' subfolder contains the training data utilized to train each of the sarcasm detection models.
 
 **Project Structure Diagram**
+
 ![Project Structure](Project_Structure.jpg)
 
 **Main.py**
