@@ -89,7 +89,7 @@ if __name__ == "__main__":
         else:
             print('Process ends.')
     else:
-        print('No translation needs flagged. Process ends.')
+        print('No translation needs or flagged. Process ends.')
     
 
     

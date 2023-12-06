@@ -1,4 +1,4 @@
-from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
 
 def evaluate(results, metric):
 
