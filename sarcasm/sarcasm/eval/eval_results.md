@@ -1,4 +1,4 @@
-model 1：
+model 1 Logistic：
 
 |                 | Predicted Negative | Predicted Positive | Total |
 |---------------- |--------------------|--------------------|-------|
@@ -19,7 +19,7 @@ recall: 72.27%
 precision: 73.50%
 
 
-model 2：
+model 2 Naive Bayes：
 |          | Predicted Negative | Predicted Positive | Total |
 |----------|--------------------|--------------------|-------|
 | Actual Negative |       711        |       215        |  926  |
@@ -38,7 +38,7 @@ acc:73.00%
 recall: 69.33%
 precision: 75.43%
 
-model 3：
+model 3 LSTM：
 
 |                | Predicted Negative | Predicted Positive | Total |
 |----------------|--------------------|--------------------|-------|
@@ -58,7 +58,7 @@ acc:70.23%
 recall: 81.51%
 precision: 66.95%
 
-model 4：
+model 4 Random Forest：
 
 |                | Predicted Negative | Predicted Positive | Total |
 |----------------|--------------------|--------------------|-------|
